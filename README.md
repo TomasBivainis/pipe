@@ -46,6 +46,10 @@ Here are some areas for improvement in your Go code:
 
 - Not a major issue here, but if you plan to extend, consider concurrency safety for file writes.
 
-1.  **Testing**
+1. **Testing**
 
 - No unit tests provided for the helper functions.
+
+1. **MAKE IT USE THE VIRTUAL ENVIRONMENT**
+
+- Make the program use the virtual python environment.
