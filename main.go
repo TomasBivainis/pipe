@@ -40,16 +40,14 @@ func detectPip() (string, error) {
 	return "", fmt.Errorf("pip not found")
 }
 
-func detectRequirementsFile() (string, error) {
-	targetFile := "requirements.txt"
-
+func detectFile(filename string) (string, error) {
 	cwd, err := os.Getwd()
 
 	if err != nil {
 		return "", err
 	}
 
-	filepath := filepath.Join(cwd, targetFile)
+	filepath := filepath.Join(cwd, filename)
 
 	if _, err := os.Stat(filepath) ; err == nil {
 		return filepath, nil
@@ -81,7 +79,7 @@ func createRequirementsFile() (error) {
 }
 
 func addPackagesToRequirementsFile(packages []string) (error) {
-	requirementsFile, err := detectRequirementsFile()
+	requirementsFile, err := detectFile("requirements.txt")
 
 	if err != nil {
 		return err
@@ -129,14 +127,14 @@ func main() {
 			shellCmd.Stderr = os.Stderr
 			shellCmd.Stdin = os.Stdin
 
-			existsRequirementsFile, err := detectRequirementsFile()
+			requirementsFilePath, err := detectFile("requirements.txt")
 
 			if err != nil {
 				fmt.Println("Command error:", err)
 				return
 			}
 
-			if existsRequirementsFile == "" {
+			if requirementsFilePath == "" {
 				err := createRequirementsFile()
 
 				if err != nil {
