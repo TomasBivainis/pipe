@@ -2,11 +2,6 @@
 
 Here are some areas for improvement in your Go code:
 
-1. **Error Handling Consistency**
-
-- Some error messages are generic ("Command error:") and could be more descriptive.
-- Inconsistent use of `return` after printing errors (sometimes missing, sometimes present).
-
 1. **Command Construction**
 
 - In the `install` command, you use `strings.Join(args, " ")` as a single argument to `exec.Command`. This passes all packages as one argument, not as separate arguments. Instead, use variadic arguments:

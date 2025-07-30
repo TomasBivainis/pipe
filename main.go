@@ -54,6 +54,7 @@ func main() {
 
 			if err := shellCmd.Run(); err != nil {
 				fmt.Println("Command failed:", err)
+				return
 			}
 		},
 	})
