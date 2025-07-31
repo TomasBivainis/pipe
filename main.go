@@ -3,8 +3,6 @@ package main
 import (
 	"fmt"
 	"os"
-	"os/exec"
-	"strings"
 
 	"github.com/spf13/cobra"
 )
@@ -29,7 +27,7 @@ func main() {
 				return
 			}
 
-			if(!virtualEnvironmentExists) {
+			if !virtualEnvironmentExists {
 				err := createVirtualEnvironment()
 				if err != nil {
 					fmt.Println("Error while creating virtual environment:", err)
@@ -60,43 +58,33 @@ func main() {
 		Run: func(cmd *cobra.Command, args []string) {
 			//fmt.Println("Pretending to install package:", args)
 
-			pipCommand, err := detectPip()
-
+			virtualEnvironmentExists, err := detectVirtualEnvironment()
 			if err != nil {
-				fmt.Println("Pip detection failed:", err)
+				fmt.Println("Error while detecting virtual environment:", err)
+				return
+			}
+
+			if !virtualEnvironmentExists {
+				fmt.Println("Virtual environment not initiated. Run \"ami init\"")
 				return
 			}
 
 			if len(args) == 0 {
-				//fmt.Println("install requirement package")
-
-				shellCmd := exec.Command(pipCommand, "install", "-r", "requirements.txt")
-
-				shellCmd.Stdout = os.Stdout
-				shellCmd.Stderr = os.Stderr
-				shellCmd.Stdin = os.Stdin
-
-				if err := shellCmd.Run(); err != nil {
-					fmt.Println("Command failed:", err)
+				err := installAllPackages()
+				if err != nil {
+					fmt.Println("Error while installing packages:", err)
 					return
 				}
 			} else {
-				//fmt.Println("install named package")
-
-				shellCmd := exec.Command(pipCommand, "install", strings.Join(args, " "))
-
-				shellCmd.Stdout = os.Stdout
-				shellCmd.Stderr = os.Stderr
-				shellCmd.Stdin = os.Stdin
-
-				if err := shellCmd.Run(); err != nil {
-					fmt.Println("Command failed:", err)
+				err := installPackages(args)
+				if err != nil {
+					fmt.Println("Erro while installing packages:", err)
 					return
 				}
 
-				err := addPackagesToRequirementsFile(args)
+				err = writePackagesToRequirementsFile(args)
 				if err != nil {
-					fmt.Println("Editing requirements file failed:", err)
+					fmt.Println("Erro while writing packages to requirements file:", err)
 					return
 				}
 			}

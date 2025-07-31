@@ -21,22 +21,24 @@ func detectPython() (string, error) {
 	return "", fmt.Errorf("python not found")
 }
 
-func detectPip() (string, error) {
-	candidates := []string{"pip", "pip3"}
-
-	for _, name := range candidates {
-		if path, err := exec.LookPath(name); err == nil {
-			return path, nil;
-		}
+func detectVevnPip() (string, error) {
+	cwd, err := os.Getwd()
+	if err != nil {
+		return "", err
 	}
 
-	pythonPath, err := detectPython()
-
-	if err == nil {
-		return pythonPath + " -m pip", nil
+	// Adjust for OS
+	venvPip := filepath.Join(cwd, "venv", "bin", "pip")
+	if _, err := os.Stat(venvPip); err == nil {
+		return venvPip, nil
 	}
 
-	return "", fmt.Errorf("pip not found")
+	venvPipWin := filepath.Join(cwd, "venv", "Scripts", "pip.exe")
+	if _, err := os.Stat(venvPipWin); err == nil {
+		return venvPipWin, nil
+	}
+
+	return "", fmt.Errorf("pip not found in virtual environment")
 }
 
 func detectFile(path string) (string, error) {
@@ -77,7 +79,7 @@ func createRequirementsFile() (error) {
 	return nil
 }
 
-func addPackagesToRequirementsFile(packages []string) (error) {
+func writePackagesToRequirementsFile(packages []string) (error) {
 	requirementsFile, err := detectFile("requirements.txt")
 
 	if err != nil {
@@ -133,4 +135,28 @@ func createVirtualEnvironment() error {
     cmd.Stdout = os.Stdout
     cmd.Stderr = os.Stderr
     return cmd.Run()
+}
+
+func installPackages(packages []string) (error) {
+	pipCommand, err := detectVevnPip()
+	if err != nil {
+		return err
+	}
+
+	cmd := exec.Command(pipCommand, (append([]string{"install"}, packages...))...)
+	cmd.Stdout = os.Stdout
+	cmd.Stderr = os.Stderr
+	return cmd.Run()
+}
+
+func installAllPackages() (error) {
+	pipCommand, err := detectVevnPip()
+	if err != nil {
+		return err
+	}
+
+	cmd := exec.Command(pipCommand, "install", "-r", "requirements.txt")
+	cmd.Stdout = os.Stdout
+	cmd.Stderr = os.Stderr
+	return cmd.Run()
 }
