@@ -84,7 +84,7 @@ func main() {
 			} else {
 				err := installPackages(args)
 				if err != nil {
-					fmt.Println("Erro while installing packages:", err)
+					fmt.Println("Error while installing packages:", err)
 					return
 				}
 
@@ -92,7 +92,7 @@ func main() {
 
 				err = writePackagesToRequirementsFile(args)
 				if err != nil {
-					fmt.Println("Erro while writing packages to requirements file:", err)
+					fmt.Println("Error while writing packages to requirements file:", err)
 					return
 				}
 
