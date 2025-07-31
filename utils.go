@@ -14,7 +14,7 @@ func getGlobalPythonPath() (string, error) {
 
 	for _, name := range candidates {
 		if path, err := exec.LookPath(name); err == nil {
-			return path, nil;
+			return path, nil
 		}
 	}
 
