@@ -80,8 +80,32 @@ func createRequirementsFile() error {
 }
 
 func writePackagesToRequirementsFile(packages []string) error {
-	requirementsFile, err := getFilePath("requirements.txt")
+	// Get already written packages
+	writtenPackages, err := getPackagesFromRequirements()
+	if err != nil && !os.IsNotExist(err) {
+		return err
+	}
 
+	// Create a set for fast lookup
+	existing := make(map[string]struct{})
+	for _, pkg := range writtenPackages {
+		existing[strings.ToLower(pkg)] = struct{}{}
+	}
+
+	// Filter out duplicates
+	var newPackages []string
+	for _, pkg := range packages {
+		if _, found := existing[strings.ToLower(pkg)]; !found {
+			newPackages = append(newPackages, pkg)
+			existing[strings.ToLower(pkg)] = struct{}{}
+		}
+	}
+
+	if len(newPackages) == 0 {
+		return nil // Nothing new to write
+	}
+
+	requirementsFile, err := getFilePath("requirements.txt")
 	if err != nil {
 		return err
 	}
@@ -92,13 +116,45 @@ func writePackagesToRequirementsFile(packages []string) error {
 	}
 	defer file.Close()
 
-	text := strings.Join(packages, "\n")
+	// Always add a newline before appending, unless the file is empty
+	info, err := file.Stat()
+	if err == nil && info.Size() > 0 {
+		if _, err := file.WriteString("\n"); err != nil {
+			return err
+		}
+	}
 
+	text := strings.Join(newPackages, "\n")
 	if _, err := file.WriteString(text); err != nil {
 		return err
 	}
 
 	return nil
+}
+
+func getPackagesFromRequirements() ([]string, error) {
+	requirementsFile, err := getFilePath("requirements.txt")
+	if err != nil {
+		return nil, err
+	}
+	if requirementsFile == "" {
+		return nil, fmt.Errorf("requirements.txt not found")
+	}
+
+	data, err := os.ReadFile(requirementsFile)
+	if err != nil {
+			return nil, err
+	}
+
+	lines := strings.Split(string(data), "\n")
+	var packages []string
+	for _, line := range lines {
+		trimmed := strings.TrimSpace(line)
+		if trimmed != "" && !strings.HasPrefix(trimmed, "#") {
+			packages = append(packages, trimmed)
+		}
+	}
+	return packages, nil
 }
 
 func detectVirtualEnvironment() (bool, error) {
