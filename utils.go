@@ -39,17 +39,17 @@ func detectPip() (string, error) {
 	return "", fmt.Errorf("pip not found")
 }
 
-func detectFile(filename string) (string, error) {
+func detectFile(path string) (string, error) {
 	cwd, err := os.Getwd()
 
 	if err != nil {
 		return "", err
 	}
 
-	filepath := filepath.Join(cwd, filename)
+	path = filepath.Join(cwd, path)
 
-	if _, err := os.Stat(filepath) ; err == nil {
-		return filepath, nil
+	if _, err := os.Stat(path) ; err == nil {
+		return path, nil
 	} else if os.IsNotExist(err) {
 		return "", nil
 	} else {
@@ -97,4 +97,40 @@ func addPackagesToRequirementsFile(packages []string) (error) {
 	}
 
 	return nil
-} 
+}
+
+func detectVirtualEnvironment() (bool, error) {
+	cwd, err := os.Getwd()
+	if err != nil {
+		return false, err
+	}
+
+	venvDirs := []string{"venv", ".venv", "env"}
+	pythonNames := []string{"bin/python", "Scripts/python.exe"}
+
+	for _, venv := range venvDirs {
+		venvPath := filepath.Join(cwd, venv)
+		info, err := os.Stat(venvPath)
+		if err == nil && info.IsDir() {
+			// Check for python executable inside venv
+			for _, py := range pythonNames {
+				pyPath := filepath.Join(venvPath, py)
+				if _, err := os.Stat(pyPath); err == nil {
+					return true, nil
+				}
+			}
+		}
+	}
+	return false, nil
+}
+
+func createVirtualEnvironment() error {
+    pythonPath, err := detectPython()
+    if err != nil {
+        return err
+    }
+    cmd := exec.Command(pythonPath, "-m", "venv", "venv")
+    cmd.Stdout = os.Stdout
+    cmd.Stderr = os.Stderr
+    return cmd.Run()
+}

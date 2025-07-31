@@ -23,38 +23,32 @@ func main() {
 		Run: func(cmd *cobra.Command, args []string) {
 			fmt.Println("Initializing a python new project...")
 
-			pythonCommand, err := detectPython()
-
+			virtualEnvironmentExists, err := detectVirtualEnvironment()
 			if err != nil {
-				fmt.Println("Python detection failed:", err)
+				fmt.Println("Error while detecting virtual environment:", err)
 				return
 			}
 
-			shellCmd := exec.Command(pythonCommand, "-m", "venv", ".venv")
-
-			shellCmd.Stdout = os.Stdout
-			shellCmd.Stderr = os.Stderr
-			shellCmd.Stdin = os.Stdin
-
-			requirementsFilePath, err := detectFile("requirements.txt")
-
-			if err != nil {
-				fmt.Println("File detection failed:", err)
-				return
-			}
-
-			if requirementsFilePath == "" {
-				err := createRequirementsFile()
-
+			if(!virtualEnvironmentExists) {
+				err := createVirtualEnvironment()
 				if err != nil {
-					fmt.Println("Requirements file creation failed:", err)
-					return;
+					fmt.Println("Error while creating virtual environment:", err)
+					return
 				}
 			}
 
-			if err := shellCmd.Run(); err != nil {
-				fmt.Println("Command failed:", err)
+			path, err := detectFile("requirements.txt")
+			if err != nil {
+				fmt.Println("Error while detecting requirements file:", err)
 				return
+			}
+
+			if path == "" {
+				err := createRequirementsFile()
+				if err != nil {
+					fmt.Println("Error while creating requirements file:", err)
+					return
+				}
 			}
 		},
 	})
