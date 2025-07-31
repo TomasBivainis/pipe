@@ -35,7 +35,7 @@ func main() {
 				}
 			}
 
-			path, err := detectFile("requirements.txt")
+			path, err := getFilePath("requirements.txt")
 			if err != nil {
 				fmt.Println("Error while detecting requirements file:", err)
 				return
@@ -70,7 +70,7 @@ func main() {
 			}
 
 			if len(args) == 0 {
-				err := installAllPackages()
+				err := installPackagesFromRequirements()
 				if err != nil {
 					fmt.Println("Error while installing packages:", err)
 					return

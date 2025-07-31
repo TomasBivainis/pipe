@@ -9,7 +9,7 @@ import (
 )
 
 
-func detectPython() (string, error) {
+func getGlobalPythonPath() (string, error) {
 	candidates := []string{"python3", "python", "py"}
 
 	for _, name := range candidates {
@@ -21,7 +21,7 @@ func detectPython() (string, error) {
 	return "", fmt.Errorf("python not found")
 }
 
-func detectVevnPip() (string, error) {
+func getVenvPipPath() (string, error) {
 	cwd, err := os.Getwd()
 	if err != nil {
 		return "", err
@@ -41,7 +41,7 @@ func detectVevnPip() (string, error) {
 	return "", fmt.Errorf("pip not found in virtual environment")
 }
 
-func detectFile(path string) (string, error) {
+func getFilePath(path string) (string, error) {
 	cwd, err := os.Getwd()
 
 	if err != nil {
@@ -80,7 +80,7 @@ func createRequirementsFile() (error) {
 }
 
 func writePackagesToRequirementsFile(packages []string) (error) {
-	requirementsFile, err := detectFile("requirements.txt")
+	requirementsFile, err := getFilePath("requirements.txt")
 
 	if err != nil {
 		return err
@@ -127,7 +127,7 @@ func detectVirtualEnvironment() (bool, error) {
 }
 
 func createVirtualEnvironment() error {
-    pythonPath, err := detectPython()
+    pythonPath, err := getGlobalPythonPath()
     if err != nil {
         return err
     }
@@ -138,7 +138,7 @@ func createVirtualEnvironment() error {
 }
 
 func installPackages(packages []string) (error) {
-	pipCommand, err := detectVevnPip()
+	pipCommand, err := getVenvPipPath()
 	if err != nil {
 		return err
 	}
@@ -149,8 +149,8 @@ func installPackages(packages []string) (error) {
 	return cmd.Run()
 }
 
-func installAllPackages() (error) {
-	pipCommand, err := detectVevnPip()
+func installPackagesFromRequirements() (error) {
+	pipCommand, err := getVenvPipPath()
 	if err != nil {
 		return err
 	}
