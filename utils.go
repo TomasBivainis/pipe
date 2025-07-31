@@ -187,7 +187,7 @@ func createVirtualEnvironment() error {
     if err != nil {
         return err
     }
-    cmd := exec.Command(pythonPath, "-m", "venv", "venv")
+    cmd := exec.Command(pythonPath, "-m", "venv", ".venv")
     cmd.Stdout = os.Stdout
     cmd.Stderr = os.Stderr
     return cmd.Run()
