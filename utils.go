@@ -59,7 +59,7 @@ func getFilePath(path string) (string, error) {
 	}
 }
 
-func createRequirementsFile() (error) {
+func createRequirementsFile() error {
 	targetFile := "requirements.txt"
 
 	cwd, err := os.Getwd()
@@ -79,7 +79,7 @@ func createRequirementsFile() (error) {
 	return nil
 }
 
-func writePackagesToRequirementsFile(packages []string) (error) {
+func writePackagesToRequirementsFile(packages []string) error {
 	requirementsFile, err := getFilePath("requirements.txt")
 
 	if err != nil {
@@ -137,7 +137,7 @@ func createVirtualEnvironment() error {
     return cmd.Run()
 }
 
-func installPackages(packages []string) (error) {
+func installPackages(packages []string) error {
 	pipCommand, err := getVenvPipPath()
 	if err != nil {
 		return err
@@ -149,7 +149,7 @@ func installPackages(packages []string) (error) {
 	return cmd.Run()
 }
 
-func installPackagesFromRequirements() (error) {
+func installPackagesFromRequirements() error {
 	pipCommand, err := getVenvPipPath()
 	if err != nil {
 		return err

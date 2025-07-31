@@ -10,8 +10,8 @@ import (
 func main() {
 	var rootCmd = &cobra.Command{
 		Use:   "ami",
-		Short: "ami is a simple package manager meant to improve pip",
-		Long:  `A package manager CLI built in Go to replace pip.`,
+		Short: "ami helps with package management.",
+		Long:  `A package manager CLI built to improve the usage of pip and python.`,
 	}
 
 	// Add "init" command
@@ -33,6 +33,8 @@ func main() {
 					fmt.Println("Error while creating virtual environment:", err)
 					return
 				}
+
+				fmt.Println("Created a new virtual environment.")
 			}
 
 			path, err := getFilePath("requirements.txt")
@@ -47,6 +49,8 @@ func main() {
 					fmt.Println("Error while creating requirements file:", err)
 					return
 				}
+
+				fmt.Println("Created a new requirements.txt file.")
 			}
 		},
 	})
@@ -75,6 +79,8 @@ func main() {
 					fmt.Println("Error while installing packages:", err)
 					return
 				}
+
+				fmt.Println("All packages from the requirements file have been installed.")
 			} else {
 				err := installPackages(args)
 				if err != nil {
@@ -82,11 +88,15 @@ func main() {
 					return
 				}
 
+				fmt.Println("The package(s) have been installed.")
+
 				err = writePackagesToRequirementsFile(args)
 				if err != nil {
 					fmt.Println("Erro while writing packages to requirements file:", err)
 					return
 				}
+
+				fmt.Println("Packages written to the requirements file.")
 			}
 		},
 	})
