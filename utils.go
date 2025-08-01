@@ -27,16 +27,22 @@ func getVenvPipPath() (string, error) {
 		return "", err
 	}
 
-	// Adjust for OS
-	venvPip := filepath.Join(cwd, "venv", "bin", "pip")
-	if _, err := os.Stat(venvPip); err == nil {
-		return venvPip, nil
+	venvDirs := []string{"venv", ".venv", "env"}
+
+	for _, venvDir := range venvDirs {
+		// Adjust for OS
+		venvPip := filepath.Join(cwd, venvDir, "bin", "pip")
+		if _, err := os.Stat(venvPip); err == nil {
+			return venvPip, nil
+		}
+
+		venvPipWin := filepath.Join(cwd, venvDir, "Scripts", "pip.exe")
+		if _, err := os.Stat(venvPipWin); err == nil {
+			return venvPipWin, nil
+		}
 	}
 
-	venvPipWin := filepath.Join(cwd, "venv", "Scripts", "pip.exe")
-	if _, err := os.Stat(venvPipWin); err == nil {
-		return venvPipWin, nil
-	}
+	
 
 	return "", fmt.Errorf("pip not found in virtual environment")
 }
