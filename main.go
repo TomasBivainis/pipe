@@ -14,7 +14,7 @@ func main() {
 		Long:  `A package manager CLI built to improve the usage of pip and python.`,
 	}
 
-	// Add "init" command
+	// init command
 	rootCmd.AddCommand(&cobra.Command{
 		Use:   "init",
 		Short: "Initialize a new project",
@@ -55,13 +55,11 @@ func main() {
 		},
 	})
 
-	// Add adding to the requirements file
+	// install command
 	rootCmd.AddCommand(&cobra.Command{
 		Use:   "install",
 		Short: "Install a python pip package",
 		Run: func(cmd *cobra.Command, args []string) {
-			//fmt.Println("Pretending to install package:", args)
-
 			virtualEnvironmentExists, err := detectVirtualEnvironment()
 			if err != nil {
 				fmt.Println("Error while detecting virtual environment:", err)
@@ -87,17 +85,52 @@ func main() {
 					fmt.Println("Error while installing packages:", err)
 					return
 				}
-
 				fmt.Println("The package(s) have been installed.")
 
-				err = writePackagesToRequirementsFile(args)
+				err = addPackagesToRequirementsFile(args)
 				if err != nil {
 					fmt.Println("Error while writing packages to requirements file:", err)
 					return
 				}
-
-				fmt.Println("Packages written to the requirements file.")
+				fmt.Println("The package(s) have been written to the requirements file.")
 			}
+		},
+	})
+
+	// uninstall command
+	rootCmd.AddCommand(&cobra.Command{
+		Use:   "uninstall",
+		Short: "Uninstall a python pip package",
+		Run: func(cmd *cobra.Command, args []string) {
+			if len(args) == 0 {
+				fmt.Println("No packages entered to uninstall.")
+				return
+			}
+
+			virtualEnvironmentExists, err := detectVirtualEnvironment()
+			if err != nil {
+				fmt.Println("Error while detecting virtual environment:", err)
+				return
+			}
+
+			if !virtualEnvironmentExists {
+				fmt.Println("Virtual environment not initiated. Run \"ami init\"")
+				return
+			}
+
+			err = uninstallPackages(args)
+			if err != nil {
+				fmt.Println("Error while uninstalling packages:", err)
+				return
+			}
+			fmt.Println("The package(s) have been uninstalled.")
+			
+			err = removePackagesFromRequirementsFile(args)
+			if err != nil {
+				fmt.Println("Error while removing packages from requirements file:", err)
+				return
+			}
+			fmt.Println("The package(s) have been removed from the requirements file.")
 		},
 	})
 
