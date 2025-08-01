@@ -1,5 +1,4 @@
-# .goreleaser.yaml
-project_name: your-cli-tool-name
+project_name: ami
 
 builds:
   - main: ./cmd/your-cli
@@ -16,8 +15,8 @@ archives:
 
 release:
   github:
-    owner: your-github-username
-    name: your-repo-name
+    owner: tomasbivainis
+    name: ami
 
 checksum:
   name_template: "{{ .ProjectName }}_checksums.txt"
