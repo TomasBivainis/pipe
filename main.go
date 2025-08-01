@@ -99,6 +99,29 @@ func main() {
 		},
 	})
 
+	// uninstall command
+	rootCmd.AddCommand(&cobra.Command{
+		Use:   "uninstall",
+		Short: "Uninstall a python pip package",
+		Run: func(cmd *cobra.Command, args []string) {
+			if len(args) == 0 {
+				fmt.Println("No packages entered to uninstall.")
+				return
+			}
+
+			virtualEnvironmentExists, err := detectVirtualEnvironment()
+			if err != nil {
+				fmt.Println("Error while detecting virtual environment:", err)
+				return
+			}
+
+			if !virtualEnvironmentExists {
+				fmt.Println("Virtual environment not initiated. Run \"ami init\"")
+				return
+			}
+		},
+	})
+
 	if err := rootCmd.Execute(); err != nil {
 		fmt.Println(err)
 		os.Exit(1)
