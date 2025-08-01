@@ -14,7 +14,7 @@ func main() {
 		Long:  `A package manager CLI built to improve the usage of pip and python.`,
 	}
 
-	// Add "init" command
+	// init command
 	rootCmd.AddCommand(&cobra.Command{
 		Use:   "init",
 		Short: "Initialize a new project",
@@ -55,13 +55,11 @@ func main() {
 		},
 	})
 
-	// Add adding to the requirements file
+	// install command
 	rootCmd.AddCommand(&cobra.Command{
 		Use:   "install",
 		Short: "Install a python pip package",
 		Run: func(cmd *cobra.Command, args []string) {
-			//fmt.Println("Pretending to install package:", args)
-
 			virtualEnvironmentExists, err := detectVirtualEnvironment()
 			if err != nil {
 				fmt.Println("Error while detecting virtual environment:", err)
