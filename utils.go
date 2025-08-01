@@ -80,52 +80,17 @@ func createRequirementsFile() error {
 }
 
 func writePackagesToRequirementsFile(packages []string) error {
-	// Get already written packages
-	writtenPackages, err := getPackagesFromRequirements()
-	if err != nil && !os.IsNotExist(err) {
-		return err
-	}
-
-	// Create a set for fast lookup
-	existing := make(map[string]struct{})
-	for _, pkg := range writtenPackages {
-		existing[strings.ToLower(pkg)] = struct{}{}
-	}
-
-	// Filter out duplicates
-	var newPackages []string
-	for _, pkg := range packages {
-		if _, found := existing[strings.ToLower(pkg)]; !found {
-			newPackages = append(newPackages, pkg)
-			existing[strings.ToLower(pkg)] = struct{}{}
-		}
-	}
-
-	if len(newPackages) == 0 {
-		return nil // Nothing new to write
-	}
-
 	requirementsFile, err := getFilePath("requirements.txt")
 	if err != nil {
 		return err
 	}
+	if requirementsFile == "" {
+		return fmt.Errorf("requirements.txt not found")
+	}
 
-	file, err := os.OpenFile(requirementsFile, os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0644)
+	content := strings.Join(packages, "\n")
+	err = os.WriteFile(requirementsFile, []byte(content), 0644)
 	if err != nil {
-		return err
-	}
-	defer file.Close()
-
-	// Always add a newline before appending, unless the file is empty
-	info, err := file.Stat()
-	if err == nil && info.Size() > 0 {
-		if _, err := file.WriteString("\n"); err != nil {
-			return err
-		}
-	}
-
-	text := strings.Join(newPackages, "\n")
-	if _, err := file.WriteString(text); err != nil {
 		return err
 	}
 
@@ -215,4 +180,74 @@ func installPackagesFromRequirements() error {
 	cmd.Stdout = os.Stdout
 	cmd.Stderr = os.Stderr
 	return cmd.Run()
+}
+
+func uninstallPackages(packages []string) error {
+	pipCommand, err := getVenvPipPath()
+	if err != nil {
+		return err
+	}
+
+	cmd := exec.Command(pipCommand, (append([]string{"uninstall"}, packages...))...)
+	cmd.Stdout = os.Stdout
+	cmd.Stderr = os.Stderr
+	return cmd.Run()
+}
+
+func removePackagesFromRequirementsFile(packages []string) error {
+	currentPackages, err := getPackagesFromRequirements()
+	if err != nil {
+		return err
+	}
+
+	// Create a set of packages to remove (case-insensitive)
+    toRemove := make(map[string]struct{})
+    for _, pkg := range packages {
+			toRemove[strings.ToLower(pkg)] = struct{}{}
+    }
+
+	// Filter out packages to remove
+	var updatedPackages []string
+	for _, pkg := range currentPackages {
+		if _, found := toRemove[strings.ToLower(pkg)]; !found {
+			updatedPackages = append(updatedPackages, pkg)
+		}
+	}
+
+	writePackagesToRequirementsFile(updatedPackages)
+
+	return nil
+}
+
+func addPackagesToRequirementsFile(packages []string) error {
+	// Get already written packages
+	currentPackages, err := getPackagesFromRequirements()
+	if err != nil && !os.IsNotExist(err) {
+		return err
+	}
+
+	// Create a set for fast lookup
+	existing := make(map[string]struct{})
+	for _, pkg := range currentPackages {
+		existing[strings.ToLower(pkg)] = struct{}{}
+	}
+
+	// Filter out duplicates
+	var newPackages []string
+	for _, pkg := range packages {
+		if _, found := existing[strings.ToLower(pkg)]; !found {
+			newPackages = append(newPackages, pkg)
+			existing[strings.ToLower(pkg)] = struct{}{}
+		}
+	}
+
+	if len(newPackages) == 0 {
+		return nil // Nothing new to write
+	}
+
+	updatedPackages := append(currentPackages, newPackages...)
+
+	writePackagesToRequirementsFile(updatedPackages)
+	
+	return nil
 }

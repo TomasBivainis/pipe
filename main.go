@@ -88,7 +88,7 @@ func main() {
 
 				fmt.Println("The package(s) have been installed.")
 
-				err = writePackagesToRequirementsFile(args)
+				err = addPackagesToRequirementsFile(args)
 				if err != nil {
 					fmt.Println("Error while writing packages to requirements file:", err)
 					return
@@ -117,6 +117,18 @@ func main() {
 
 			if !virtualEnvironmentExists {
 				fmt.Println("Virtual environment not initiated. Run \"ami init\"")
+				return
+			}
+
+			err = uninstallPackages(args)
+			if err != nil {
+				fmt.Println("Error while uninstalling packages:", err)
+				return
+			}
+
+			err = removePackagesFromRequirementsFile(args)
+			if err != nil {
+				fmt.Println("Error while removing packages from requirements file:", err)
 				return
 			}
 		},
