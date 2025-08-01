@@ -85,7 +85,6 @@ func main() {
 					fmt.Println("Error while installing packages:", err)
 					return
 				}
-
 				fmt.Println("The package(s) have been installed.")
 
 				err = addPackagesToRequirementsFile(args)
@@ -93,8 +92,7 @@ func main() {
 					fmt.Println("Error while writing packages to requirements file:", err)
 					return
 				}
-
-				fmt.Println("Packages written to the requirements file.")
+				fmt.Println("The package(s) have been written to the requirements file.")
 			}
 		},
 	})
@@ -125,12 +123,14 @@ func main() {
 				fmt.Println("Error while uninstalling packages:", err)
 				return
 			}
-
+			fmt.Println("The package(s) have been uninstalled.")
+			
 			err = removePackagesFromRequirementsFile(args)
 			if err != nil {
 				fmt.Println("Error while removing packages from requirements file:", err)
 				return
 			}
+			fmt.Println("The package(s) have been removed from the requirements file.")
 		},
 	})
 
