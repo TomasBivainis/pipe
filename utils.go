@@ -220,7 +220,10 @@ func removePackagesFromRequirementsFile(packages []string) error {
 		}
 	}
 
-	writePackagesToRequirementsFile(updatedPackages)
+	err = writePackagesToRequirementsFile(updatedPackages)
+	if err != nil {
+		return err
+	}
 
 	return nil
 }
@@ -253,7 +256,10 @@ func addPackagesToRequirementsFile(packages []string) error {
 
 	updatedPackages := append(currentPackages, newPackages...)
 
-	writePackagesToRequirementsFile(updatedPackages)
+	err = writePackagesToRequirementsFile(updatedPackages)
+	if err != nil {
+		return err
+	}
 	
 	return nil
 }
