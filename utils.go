@@ -194,7 +194,7 @@ func uninstallPackages(packages []string) error {
 		return err
 	}
 
-	cmd := exec.Command(pipCommand, (append([]string{"uninstall"}, packages...))...)
+	cmd := exec.Command(pipCommand, (append([]string{"uninstall", "-y"}, packages...))...)
 	cmd.Stdout = os.Stdout
 	cmd.Stderr = os.Stderr
 	return cmd.Run()
