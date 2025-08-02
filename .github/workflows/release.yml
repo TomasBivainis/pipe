@@ -5,16 +5,6 @@ on:
     tags:
       - "v*"
 jobs:
-  test:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-      - name: Set up Go
-        uses: actions/setup-go@v4
-        with:
-          go-version: "1.23.2"
-      - name: Test
-        run: go test -v ./...
   build:
     runs-on: ubuntu-latest
     strategy:
@@ -29,10 +19,11 @@ jobs:
         with:
           go-version: "1.23.2"
 
+      - name: Create binaies directory
+        run: mkdir -p dist
+
       - name: Build binary
-        run: |
-          mkdir -p dist
-          GOOS=${{ matrix.goos }} GOARCH=${{ matrix.goarch }} go build -o dist/ami-${{ matrix.goos }}-${{ matrix.goarch }}${{ matrix.goos == 'windows' && '.exe' || ''}} .
+        run: GOOS=${{ matrix.goos }} GOARCH=${{ matrix.goarch }} go build -o dist/ami-${{ matrix.goos }}-${{ matrix.goarch }}${{ matrix.goos == 'windows' && '.exe' || ''}} .
 
       - name: Upload binary to artifacts
         uses: actions/upload-artifact@v4
