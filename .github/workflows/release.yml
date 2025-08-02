@@ -19,16 +19,15 @@ jobs:
         with:
           go-version: "1.23.2"
 
-      - name: Create binaies directory
-        run: mkdir -p dist
-
       - name: Build binary
-        run: GOOS=${{ matrix.goos }} GOARCH=${{ matrix.goarch }} go build -o dist/ami-${{ matrix.goos }}-${{ matrix.goarch }}${{ matrix.goos == 'windows' && '.exe' || ''}} .
+        run: |
+          mkdir -p dist
+          GOOS=${{ matrix.goos }} GOARCH=${{ matrix.goarch }} go build -o dist/ami-${{ matrix.goos }}-${{ matrix.goarch }}${{ matrix.goos == 'windows' && '.exe' || ''}} .
 
       - name: Upload binary to artifacts
         uses: actions/upload-artifact@v4
         with:
-          name: binaries
+          name: binaries-${{ matrix.goos }}-${{ matrix.goarch }}
           path: dist/
 
   release:
