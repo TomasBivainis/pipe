@@ -3,197 +3,134 @@ package main
 import (
 	"fmt"
 	"os"
-	"os/exec"
-	"path/filepath"
-	"strings"
 
 	"github.com/spf13/cobra"
 )
 
-func detectPython() (string, error) {
-	candidates := []string{"python3", "python", "py"}
-
-	for _, name := range candidates {
-		if path, err := exec.LookPath(name); err == nil {
-			return path, nil;
-		}
-	}
-
-	return "", fmt.Errorf("python not found")
-}
-
-func detectPip() (string, error) {
-	candidates := []string{"pip", "pip3"}
-
-	for _, name := range candidates {
-		if path, err := exec.LookPath(name); err == nil {
-			return path, nil;
-		}
-	}
-
-	pythonPath, err := detectPython()
-
-	if err == nil {
-		return pythonPath + " -m pip", nil
-	}
-
-	return "", fmt.Errorf("pip not found")
-}
-
-func detectFile(filename string) (string, error) {
-	cwd, err := os.Getwd()
-
-	if err != nil {
-		return "", err
-	}
-
-	filepath := filepath.Join(cwd, filename)
-
-	if _, err := os.Stat(filepath) ; err == nil {
-		return filepath, nil
-	} else if os.IsNotExist(err) {
-		return "", nil
-	} else {
-		return "", err
-	}
-}
-
-func createRequirementsFile() (error) {
-	targetFile := "requirements.txt"
-
-	cwd, err := os.Getwd()
-
-	if err != nil {
-		return err
-	}
-
-	file, err := os.Create(filepath.Join(cwd, targetFile))
-
-	if err != nil {
-		return err
-	}
-
-	defer file.Close()
-
-	return nil
-}
-
-func addPackagesToRequirementsFile(packages []string) (error) {
-	requirementsFile, err := detectFile("requirements.txt")
-
-	if err != nil {
-		return err
-	}
-
-	file, err := os.OpenFile(requirementsFile, os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0644)
-	if err != nil {
-		return err
-	}
-	defer file.Close()
-
-	text := strings.Join(packages, "\n")
-
-	if _, err := file.WriteString(text); err != nil {
-		return err
-	}
-
-	return nil
-} 
-
 func main() {
 	var rootCmd = &cobra.Command{
 		Use:   "ami",
-		Short: "ami is a simple package manager meant to improve pip",
-		Long:  `A package manager CLI built in Go to replace pip.`,
+		Short: "ami helps with package management.",
+		Long:  `A package manager CLI built to improve the usage of pip and python.`,
 	}
 
-	// Add "init" command
+	// init command
 	rootCmd.AddCommand(&cobra.Command{
 		Use:   "init",
 		Short: "Initialize a new project",
 		Run: func(cmd *cobra.Command, args []string) {
 			fmt.Println("Initializing a python new project...")
 
-			pythonCommand, err := detectPython()
-
+			virtualEnvironmentExists, err := detectVirtualEnvironment()
 			if err != nil {
-				fmt.Println("Command error:", err)
+				fmt.Println("Error while detecting virtual environment:", err)
 				return
 			}
 
-			shellCmd := exec.Command(pythonCommand, "-m", "venv", ".venv")
-
-			shellCmd.Stdout = os.Stdout
-			shellCmd.Stderr = os.Stderr
-			shellCmd.Stdin = os.Stdin
-
-			requirementsFilePath, err := detectFile("requirements.txt")
-
-			if err != nil {
-				fmt.Println("Command error:", err)
-				return
-			}
-
-			if requirementsFilePath == "" {
-				err := createRequirementsFile()
-
+			if !virtualEnvironmentExists {
+				err := createVirtualEnvironment()
 				if err != nil {
-					fmt.Println("Command error:", err)
-					return;
+					fmt.Println("Error while creating virtual environment:", err)
+					return
 				}
+
+				fmt.Println("Created a new virtual environment.")
 			}
 
-			if err := shellCmd.Run(); err != nil {
-				fmt.Println("Command failed:", err)
+			path, err := getFilePath("requirements.txt")
+			if err != nil {
+				fmt.Println("Error while detecting requirements file:", err)
+				return
+			}
+
+			if path == "" {
+				err := createRequirementsFile()
+				if err != nil {
+					fmt.Println("Error while creating requirements file:", err)
+					return
+				}
+
+				fmt.Println("Created a new requirements.txt file.")
 			}
 		},
 	})
 
-	// Add adding to the requirements file
+	// install command
 	rootCmd.AddCommand(&cobra.Command{
 		Use:   "install",
 		Short: "Install a python pip package",
 		Run: func(cmd *cobra.Command, args []string) {
-			//fmt.Println("Pretending to install package:", args)
-
-			pipCommand, err := detectPip()
-
+			virtualEnvironmentExists, err := detectVirtualEnvironment()
 			if err != nil {
-				fmt.Println("Command failed:", err)
+				fmt.Println("Error while detecting virtual environment:", err)
+				return
+			}
+
+			if !virtualEnvironmentExists {
+				fmt.Println("Virtual environment not initiated. Run \"ami init\"")
 				return
 			}
 
 			if len(args) == 0 {
-				//fmt.Println("install requirement package")
-
-				shellCmd := exec.Command(pipCommand, "install", "-r", "requirements.txt")
-
-				shellCmd.Stdout = os.Stdout
-				shellCmd.Stderr = os.Stderr
-				shellCmd.Stdin = os.Stdin
-
-				if err := shellCmd.Run(); err != nil {
-					fmt.Println("Command failed:", err)
-				}
-			} else {
-				//fmt.Println("install named package")
-
-				shellCmd := exec.Command(pipCommand, "install", strings.Join(args, " "))
-
-				shellCmd.Stdout = os.Stdout
-				shellCmd.Stderr = os.Stderr
-				shellCmd.Stdin = os.Stdin
-
-				if err := shellCmd.Run(); err != nil {
-					fmt.Println("Command failed:", err)
+				err := installPackagesFromRequirements()
+				if err != nil {
+					fmt.Println("Error while installing packages:", err)
 					return
 				}
 
-				err := addPackagesToRequirementsFile(args)
+				fmt.Println("All packages from the requirements file have been installed.")
+			} else {
+				err := installPackages(args)
 				if err != nil {
-					fmt.Println("Command error:", err)
+					fmt.Println("Error while installing packages:", err)
+					return
 				}
+				fmt.Println("The package(s) have been installed.")
+
+				err = addPackagesToRequirementsFile(args)
+				if err != nil {
+					fmt.Println("Error while writing packages to requirements file:", err)
+					return
+				}
+				fmt.Println("The package(s) have been written to the requirements file.")
 			}
+		},
+	})
+
+	// uninstall command
+	rootCmd.AddCommand(&cobra.Command{
+		Use:   "uninstall",
+		Short: "Uninstall a python pip package",
+		Run: func(cmd *cobra.Command, args []string) {
+			if len(args) == 0 {
+				fmt.Println("No packages entered to uninstall.")
+				return
+			}
+
+			virtualEnvironmentExists, err := detectVirtualEnvironment()
+			if err != nil {
+				fmt.Println("Error while detecting virtual environment:", err)
+				return
+			}
+
+			if !virtualEnvironmentExists {
+				fmt.Println("Virtual environment not initiated. Run \"ami init\"")
+				return
+			}
+
+			err = uninstallPackages(args)
+			if err != nil {
+				fmt.Println("Error while uninstalling packages:", err)
+				return
+			}
+			fmt.Println("The package(s) have been uninstalled.")
+			
+			err = removePackagesFromRequirementsFile(args)
+			if err != nil {
+				fmt.Println("Error while removing packages from requirements file:", err)
+				return
+			}
+			fmt.Println("The package(s) have been removed from the requirements file.")
 		},
 	})
 

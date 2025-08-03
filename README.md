@@ -19,3 +19,15 @@
 <p align="center">
   Advanced Module Integration (ami) is a CLI tool that abstracts virtual environments and makes it much easier to track your python packages.
 </p>
+
+# TODO
+
+Here are some areas for improvement in your Go code:
+
+1. **Concurrency and Performance**
+
+- Not a major issue here, but if you plan to extend, consider concurrency safety for file writes.
+
+1. **Testing**
+
+- No unit tests provided for the helper functions.
