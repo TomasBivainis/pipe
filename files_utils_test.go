@@ -103,6 +103,67 @@ func TestRemovePackagesFromRequirementsFile(t *testing.T) {
 	}
 }
 
+func TestGetFilePathWhenFileExists(t *testing.T) {
+	reqPath := setupTempRequirements(t, []string{})
+	// add /private because for some reason path has it
+	reqPath = filepath.Join("/private", reqPath)
+
+	path, err := getFilePath("requirements.txt")
+	if err != nil {
+		t.Fatalf("getFilePath failed: %v", err)
+	}
+
+	if path != reqPath {
+		t.Errorf("file path is incorrect: expected %s, received %s", reqPath, path)
+	}
+}
+
+func TestGetFilePathWhenFileDoesNotExists(t *testing.T) {
+	tmpDir := t.TempDir()
+
+	oldDir, _ := os.Getwd()
+	os.Chdir(tmpDir)
+	t.Cleanup(func() { os.Chdir(oldDir) })
+
+	path, err := getFilePath("requirements.txt")
+	if err != nil {
+		t.Fatalf("getFilePath failed: %v", err)
+	}
+
+	if path != "" {
+		t.Errorf("unexpected path was found")
+	}
+}
+
+func TestCreateRequirementsFile(t *testing.T) {
+	tmpDir := t.TempDir()
+
+	oldDir, _ := os.Getwd()
+	os.Chdir(tmpDir)
+	t.Cleanup(func() { os.Chdir(oldDir) })
+
+	expectedPath := filepath.Join("/private", tmpDir, "requirements.txt")
+
+	err := createRequirementsFile()
+	if err != nil {
+		t.Fatalf("createRequirementsFile failed: %v", err)
+	}
+
+	path, err := getFilePath("requirements.txt")
+	if err != nil {
+		t.Fatalf("getFilePath failed: %v", err)
+	}
+
+	if path == "" {
+		t.Errorf("path not found")
+	}
+
+	// add /private to tmpDir because for some reason path has it
+	if path != expectedPath {
+		t.Errorf("path is incorrect: excpected %s, received %s", expectedPath, path)
+	}
+}
+
 /*
 func TestGetGlobalPythonPath(t *testing.T) {
 	_, err := getGlobalPythonPath()
