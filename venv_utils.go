@@ -118,5 +118,19 @@ func uninstallPackages(packages []string) error {
 	return cmd.Run()
 }
 
+func isPythonPackageInstalled(pkg string) (bool, error) {
+	pipPath, err := getVenvPipPath()
+	if err != nil {
+		return false, err
+	}
 
-
+	cmd := exec.Command(pipPath, "show", pkg)
+	err = cmd.Run()
+	if err == nil {
+		return true, nil
+	}
+	if exitErr, ok := err.(*exec.ExitError); ok && exitErr.ExitCode() == 1 {
+		return false, nil // Not installed
+	}
+	return false, err // Some other error
+}
