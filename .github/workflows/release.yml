@@ -26,7 +26,7 @@ jobs:
       - name: Build binary
         run: |
           mkdir -p dist
-          GOOS=${{ matrix.goos }} GOARCH=${{ matrix.goarch }} go build -o dist/ami-${{ matrix.goos }}-${{ matrix.goarch }}${{ matrix.goos == 'windows' && '.exe' || ''}} .
+          GOOS=${{ matrix.goos }} GOARCH=${{ matrix.goarch }} go build -o dist/pipe-${{ matrix.goos }}-${{ matrix.goarch }}${{ matrix.goos == 'windows' && '.exe' || ''}} .
 
       - name: Upload binary to artifacts
         uses: actions/upload-artifact@v4

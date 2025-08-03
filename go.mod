@@ -1,4 +1,4 @@
-module github.com/TomasBivainis/ami
+module github.com/TomasBivainis/pipe
 
 go 1.23.2
 

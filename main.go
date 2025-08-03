@@ -9,9 +9,9 @@ import (
 
 func main() {
 	var rootCmd = &cobra.Command{
-		Use:   "ami",
-		Short: "ami helps with package management.",
-		Long:  `A package manager CLI built to improve the usage of pip and python.`,
+		Use:   "pipe",
+		Short: "pipe helps with package management.",
+		Long:  `pipe is a package manager CLI built to improve the usage of pip and python.`,
 	}
 
 	// init command
@@ -67,7 +67,7 @@ func main() {
 			}
 
 			if !virtualEnvironmentExists {
-				fmt.Println("Virtual environment not initiated. Run \"ami init\"")
+				fmt.Println("Virtual environment not initiated. Run \"pipe init\"")
 				return
 			}
 
@@ -114,7 +114,7 @@ func main() {
 			}
 
 			if !virtualEnvironmentExists {
-				fmt.Println("Virtual environment not initiated. Run \"ami init\"")
+				fmt.Println("Virtual environment not initiated. Run \"pipe init\"")
 				return
 			}
 
