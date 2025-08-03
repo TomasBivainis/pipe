@@ -163,12 +163,3 @@ func TestCreateRequirementsFile(t *testing.T) {
 		t.Errorf("path is incorrect: excpected %s, received %s", expectedPath, path)
 	}
 }
-
-/*
-func TestGetGlobalPythonPath(t *testing.T) {
-	_, err := getGlobalPythonPath()
-	if err != nil {
-		t.Skip("Python not found on system, skipping test")
-	}
-}
-*/
