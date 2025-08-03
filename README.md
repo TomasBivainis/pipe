@@ -1,33 +1,62 @@
-<h1 align="center"> 
-  Advanced Module Integration
+<h1 align="center">
+  PIPE
 </h1>
 
-<p align="center"> 
-  <strong>Stay programming</strong><br> 
-  ami will take care of the environment.
+<p align="center">
+  <strong>Focus on coding</strong><br>
+  <em>pipe will help with the tooling.</em>
 </p>
 
 <p align="center">
-  <a href="https://github.com/TomasBivainis/ami/blob/main/LICENSE">
-    <img src="https://img.shields.io/badge/license-MIT-blue.svg" alt="ami is released under the MIT license." />
+  <a href="https://github.com/TomasBivainis/pipe/actions/workflows/test.yml">
+    <img src="https://github.com/TomasBivainis/pipe/actions/workflows/test.yml/badge.svg" alt="Build Status" />
   </a>
-  <a href="https://x.com/tomasbivainis">
-    <img src="https://img.shields.io/twitter/url?url=https%3A%2F%2Fx.com%2Ftomasbivainis&label=Follow%20me" alt="Follow @tomasbivainis" />
+  <a href="https://github.com/TomasBivainis/pipe/blob/main/LICENSE">
+    <img src="https://img.shields.io/badge/license-MIT-blue.svg" alt="MIT License" />
   </a>
 </p>
 
-<p align="center">
-  Advanced Module Integration (ami) is a CLI tool that abstracts virtual environments and makes it much easier to track your python packages.
-</p>
+## 🚀 What is pipe?
 
-# TODO
+**pipe** is a simple, fast, and reliable CLI tool written in Go that abstracts away Python virtual environment and pip management.  
+With pipe, you can initialize, install, and uninstall Python packages in isolated environments—no more manual venv or requirements.txt headaches.
 
-Here are some areas for improvement in your Go code:
+## 🤔 Why use pipe?
 
-1. **Concurrency and Performance**
+- No more remembering pip/venv commands.
+- Consistent, repeatable Python environments.
+- Works the same on every OS.
 
-- Not a major issue here, but if you plan to extend, consider concurrency safety for file writes.
+## ✨ Features
 
-1. **Testing**
+- **Easy project initialization:** `pipe init` sets up a virtual environment and requirements.txt for you.
+- **Effortless package management:** `pipe install <package>` and `pipe uninstall <package>` handle pip and requirements.txt automatically.
+- **Cross-platform:** Works on Linux, macOS, and Windows.
+- **No Python knowledge required:** Focus on coding, not on tooling.
 
-- No unit tests provided for the helper functions.
+## 🛠️ Installation
+
+Download the latest release from [Releases](https://github.com/TomasBivainis/pipe/releases) or build from source:
+
+```sh
+git clone https://github.com/TomasBivainis/pipe.git
+cd pipe
+go build -o pipe
+```
+
+## 🚦 Usage
+
+```sh
+pipe init
+pipe install requests flask
+pipe uninstall flask
+```
+
+- `pipe init` — Initializes a new Python project with a virtual environment and requirements.txt.
+- `pipe install <package>...` — Installs one or more pip packages and updates requirements.txt.
+- `pipe uninstall <package>...` — Uninstalls packages and removes them from requirements.txt.
+-
+
+## 📄 License
+
+MIT License. See [LICENSE](https://github.com/TomasBivainis/pipe/blob/main/LICENSE) for details.
