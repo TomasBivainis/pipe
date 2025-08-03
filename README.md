@@ -1,5 +1,5 @@
 <h1 align="center">
-  PIPE
+  pipe
 </h1>
 
 <p align="center">
