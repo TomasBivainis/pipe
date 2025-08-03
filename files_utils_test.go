@@ -105,16 +105,17 @@ func TestRemovePackagesFromRequirementsFile(t *testing.T) {
 
 func TestGetFilePathWhenFileExists(t *testing.T) {
 	reqPath := setupTempRequirements(t, []string{})
-	// add /private because for some reason path has it
-	reqPath = filepath.Join("/private", reqPath)
 
 	path, err := getFilePath("requirements.txt")
 	if err != nil {
 		t.Fatalf("getFilePath failed: %v", err)
 	}
 
-	if path != reqPath {
-		t.Errorf("file path is incorrect: expected %s, received %s", reqPath, path)
+	expected, _ := filepath.EvalSymlinks(reqPath)
+	actual, _ := filepath.EvalSymlinks(path)
+
+	if actual != expected {
+		t.Errorf("file path is incorrect: expected %s, received %s", expected, actual)
 	}
 }
 
@@ -142,7 +143,7 @@ func TestCreateRequirementsFile(t *testing.T) {
 	os.Chdir(tmpDir)
 	t.Cleanup(func() { os.Chdir(oldDir) })
 
-	expectedPath := filepath.Join("/private", tmpDir, "requirements.txt")
+	expectedPath := filepath.Join(tmpDir, "requirements.txt")
 
 	err := createRequirementsFile()
 	if err != nil {
@@ -158,8 +159,10 @@ func TestCreateRequirementsFile(t *testing.T) {
 		t.Errorf("path not found")
 	}
 
-	// add /private to tmpDir because for some reason path has it
-	if path != expectedPath {
-		t.Errorf("path is incorrect: excpected %s, received %s", expectedPath, path)
+	expected, _ := filepath.EvalSymlinks(expectedPath)
+	actual, _ := filepath.EvalSymlinks(path)
+
+	if actual != expected {
+		t.Errorf("path is incorrect: excpected %s, received %s", expected, actual)
 	}
 }
