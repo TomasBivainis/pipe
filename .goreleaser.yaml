@@ -1,4 +1,4 @@
-project_name: pipe
+project_name: pvm
 
 builds:
   - main: ./cmd/your-cli
@@ -16,7 +16,7 @@ archives:
 release:
   github:
     owner: tomasbivainis
-    name: pipe
+    name: pvm
 
 checksum:
   name_template: "{{ .ProjectName }}_checksums.txt"

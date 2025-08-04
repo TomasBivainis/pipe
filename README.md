@@ -1,27 +1,27 @@
 <h1 align="center">
-  pipe
+  pvm
 </h1>
 
 <p align="center">
   <strong>Focus on coding</strong><br>
-  <em>pipe will help with the tooling.</em>
+  <em>pvm will help with the tooling.</em>
 </p>
 
 <p align="center">
-  <a href="https://github.com/TomasBivainis/pipe/actions/workflows/test.yml">
-    <img src="https://github.com/TomasBivainis/pipe/actions/workflows/test.yml/badge.svg" alt="Build Status" />
+  <a href="https://github.com/TomasBivainis/pvm/actions/workflows/test.yml">
+    <img src="https://github.com/TomasBivainis/pvm/actions/workflows/test.yml/badge.svg" alt="Build Status" />
   </a>
-  <a href="https://github.com/TomasBivainis/pipe/blob/main/LICENSE">
+  <a href="https://github.com/TomasBivainis/pvm/blob/main/LICENSE">
     <img src="https://img.shields.io/badge/license-MIT-blue.svg" alt="MIT License" />
   </a>
 </p>
 
-## 🚀 What is pipe?
+## 🚀 What is pvm?
 
-**pipe** is a simple, fast, and reliable CLI tool written in Go that abstracts away Python virtual environment and pip management.  
-With pipe, you can initialize, install, and uninstall Python packages in isolated environments—no more manual venv or requirements.txt headaches.
+**pvm** is a simple, fast, and reliable CLI tool written in Go that abstracts away Python virtual environment and pip management.  
+With pvm, you can initialize, install, and uninstall Python packages in isolated environments—no more manual venv or requirements.txt headaches.
 
-## 🤔 Why use pipe?
+## 🤔 Why use pvm?
 
 - No more remembering pip/venv commands.
 - Consistent, repeatable Python environments.
@@ -29,34 +29,34 @@ With pipe, you can initialize, install, and uninstall Python packages in isolate
 
 ## ✨ Features
 
-- **Easy project initialization:** `pipe init` sets up a virtual environment and requirements.txt for you.
-- **Effortless package management:** `pipe install <package>` and `pipe uninstall <package>` handle pip and requirements.txt automatically.
+- **Easy project initialization:** `pvm init` sets up a virtual environment and requirements.txt for you.
+- **Effortless package management:** `pvm install <package>` and `pvm uninstall <package>` handle pip and requirements.txt automatically.
 - **Cross-platform:** Works on Linux, macOS, and Windows.
 - **No Python knowledge required:** Focus on coding, not on tooling.
 
 ## 🛠️ Installation
 
-Download the latest release from [Releases](https://github.com/TomasBivainis/pipe/releases) or build from source:
+Download the latest release from [Releases](https://github.com/TomasBivainis/pvm/releases) or build from source:
 
 ```sh
-git clone https://github.com/TomasBivainis/pipe.git
-cd pipe
-go build -o pipe
+git clone https://github.com/TomasBivainis/pvm.git
+cd pvm
+go build -o pvm
 ```
 
 ## 🚦 Usage
 
 ```sh
-pipe init
-pipe install requests flask
-pipe uninstall flask
+pvm init
+pvm install requests flask
+pvm uninstall flask
 ```
 
-- `pipe init` — Initializes a new Python project with a virtual environment and requirements.txt.
-- `pipe install <package>...` — Installs one or more pip packages and updates requirements.txt.
-- `pipe uninstall <package>...` — Uninstalls packages and removes them from requirements.txt.
+- `pvm init` — Initializes a new Python project with a virtual environment and requirements.txt.
+- `pvm install <package>...` — Installs one or more pip packages and updates requirements.txt.
+- `pvm uninstall <package>...` — Uninstalls packages and removes them from requirements.txt.
 -
 
 ## 📄 License
 
-MIT License. See [LICENSE](https://github.com/TomasBivainis/pipe/blob/main/LICENSE) for details.
+MIT License. See [LICENSE](https://github.com/TomasBivainis/pvm/blob/main/LICENSE) for details.
