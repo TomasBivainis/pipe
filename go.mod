@@ -1,4 +1,4 @@
-module github.com/TomasBivainis/pipe
+module github.com/TomasBivainis/pvm
 
 go 1.23.2
 
