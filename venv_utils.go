@@ -136,6 +136,8 @@ func isPythonPackageInstalled(pkg string) (bool, error) {
 	return false, err // Some other error
 }
 
+// prints instructions to activate and deactivate
+// the virtual environment
 func activateVirtualEnvironment() error {
 	cwd, err := os.Getwd()
 	if err != nil {
@@ -192,13 +194,8 @@ func activateVirtualEnvironment() error {
 	default:
 		fmt.Printf("  source %s\n", activateScript)
 	}
-	fmt.Printf("\nOr to activate and run a command:\n")
-	switch runtime.GOOS {
-	case "windows":
-		fmt.Printf("  cmd /c \"%s && your_command_here\"\n", activateScript)
-	default:
-		fmt.Printf("  source %s && your_command_here\n", activateScript)
-	}
+
+	fmt.Printf("\nTo exit the virtual environment, run:\n  deactivate\n")
 
 	return nil
 }
