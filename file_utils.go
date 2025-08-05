@@ -7,14 +7,16 @@ import (
 	"strings"
 )
 
-func getFilePath(path string) (string, error) {
+// returns the path to the file if found
+// else returns empty string
+func getFilePath(filename string) (string, error) {
 	cwd, err := os.Getwd()
 
 	if err != nil {
 		return "", err
 	}
 
-	path = filepath.Join(cwd, path)
+	path := filepath.Join(cwd, filename)
 
 	if _, err := os.Stat(path) ; err == nil {
 		return path, nil
@@ -25,6 +27,7 @@ func getFilePath(path string) (string, error) {
 	}
 }
 
+// creates a requirements.txt file
 func createRequirementsFile() error {
 	targetFile := "requirements.txt"
 
@@ -45,6 +48,8 @@ func createRequirementsFile() error {
 	return nil
 }
 
+// writes the list of passed packages to the requirements.txt file
+// overwrites the text inside the file
 func writePackagesToRequirementsFile(packages []string) error {
 	requirementsFile, err := getFilePath("requirements.txt")
 	if err != nil {
@@ -63,6 +68,8 @@ func writePackagesToRequirementsFile(packages []string) error {
 	return nil
 }
 
+// returns a list of packages in the requirements.txt file
+// as a list of strings
 func getPackagesFromRequirements() ([]string, error) {
 	requirementsFile, err := getFilePath("requirements.txt")
 	if err != nil {
@@ -88,6 +95,7 @@ func getPackagesFromRequirements() ([]string, error) {
 	return packages, nil
 }
 
+// removes the given list of packages from the requirements.txt file
 func removePackagesFromRequirementsFile(packages []string) error {
 	currentPackages, err := getPackagesFromRequirements()
 	if err != nil {
@@ -116,6 +124,8 @@ func removePackagesFromRequirementsFile(packages []string) error {
 	return nil
 }
 
+// adds the passed packages to the requirements.txt file
+// duplicates do not get added again
 func addPackagesToRequirementsFile(packages []string) error {
 	// Get already written packages
 	currentPackages, err := getPackagesFromRequirements()

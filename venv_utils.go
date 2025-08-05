@@ -7,6 +7,7 @@ import (
 	"path/filepath"
 )
 
+// returns the path to the global python application
 func getGlobalPythonPath() (string, error) {
 	candidates := []string{"python3", "python", "py"}
 
@@ -19,6 +20,7 @@ func getGlobalPythonPath() (string, error) {
 	return "", fmt.Errorf("python not found")
 }
 
+// returns the path to the virtual environments pip
 func getVenvPipPath() (string, error) {
 	cwd, err := os.Getwd()
 	if err != nil {
@@ -43,8 +45,9 @@ func getVenvPipPath() (string, error) {
 	return "", fmt.Errorf("pip not found in virtual environment")
 }
 
-
-
+// returns true if a virtual environment was 
+// initiated in the current working directory
+// otherwise, returns false
 func detectVirtualEnvironment() (bool, error) {
 	cwd, err := os.Getwd()
 	if err != nil {
@@ -71,6 +74,7 @@ func detectVirtualEnvironment() (bool, error) {
 	return false, nil
 }
 
+// creates a virtual environment
 func createVirtualEnvironment() error {
     pythonPath, err := getGlobalPythonPath()
     if err != nil {
@@ -82,6 +86,8 @@ func createVirtualEnvironment() error {
     return cmd.Run()
 }
 
+// installs the passed list of packages and writes new packages
+// to the requirements.txt file
 func installPackages(packages []string) error {
 	pipCommand, err := getVenvPipPath()
 	if err != nil {
@@ -94,6 +100,7 @@ func installPackages(packages []string) error {
 	return cmd.Run()
 }
 
+// installs all of the packages named in the requirements.txt file
 func installPackagesFromRequirements() error {
 	pipCommand, err := getVenvPipPath()
 	if err != nil {
@@ -106,6 +113,8 @@ func installPackagesFromRequirements() error {
 	return cmd.Run()
 }
 
+// uninstalls the given list of packages and removes them
+// from the requirements.txt file
 func uninstallPackages(packages []string) error {
 	pipCommand, err := getVenvPipPath()
 	if err != nil {
@@ -118,6 +127,8 @@ func uninstallPackages(packages []string) error {
 	return cmd.Run()
 }
 
+// returns true if the passed python package is installed
+// false otherwise
 func isPythonPackageInstalled(pkg string) (bool, error) {
 	pipPath, err := getVenvPipPath()
 	if err != nil {
