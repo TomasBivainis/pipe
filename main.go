@@ -134,6 +134,32 @@ func main() {
 		},
 	})
 
+	// activate command
+	rootCmd.AddCommand(&cobra.Command{
+		Use:   "activate",
+		Short: "Activates the python virtual environment",
+		Run: func(cmd *cobra.Command, args []string) {
+			virtualEnvironmentExists, err := detectVirtualEnvironment()
+			if err != nil {
+				fmt.Println("Error while detecting virtual environment:", err)
+				return
+			}
+
+			if !virtualEnvironmentExists {
+				fmt.Println("Virtual environment not initiated. Run \"pvm init\"")
+				return
+			}
+
+			err = activateVirtualEnvironment()
+			if err != nil {
+				fmt.Println("Error while activating virtual environment:", err)
+				return
+			}
+
+			fmt.Printf("Virtual environment activated.")
+		},
+	})
+
 	if err := rootCmd.Execute(); err != nil {
 		fmt.Println(err)
 		os.Exit(1)

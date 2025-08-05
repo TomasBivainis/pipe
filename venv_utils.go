@@ -5,6 +5,7 @@ import (
 	"os"
 	"os/exec"
 	"path/filepath"
+	"runtime"
 )
 
 func getGlobalPythonPath() (string, error) {
@@ -133,4 +134,41 @@ func isPythonPackageInstalled(pkg string) (bool, error) {
 		return false, nil // Not installed
 	}
 	return false, err // Some other error
+}
+
+func activateVirtualEnvironment() error {
+	cwd, err := os.Getwd()
+	if err != nil {
+		return err
+	}
+
+	venvPath := ""
+	venvDirs := []string{"venv", ".venv", "env"}
+
+	for _, venv := range venvDirs {
+		venvPath = filepath.Join(cwd, venv)
+
+		info, err := os.Stat(venvPath)
+		if err == nil && info.IsDir() {
+			break;
+		}
+	}
+	if venvPath == "" {
+		return fmt.Errorf("virtual environment was not found")
+	}
+
+	var cmd *exec.Cmd
+
+	switch runtime.GOOS {
+	case "windows":
+		activateVenvPath := filepath.Join(venvPath, "Scripts", "activate.bat")
+
+		cmd = exec.Command("cmd.exe", "/C", activateVenvPath)
+	default:
+		activateVenvPath := filepath.Join(venvPath, "Scripts", "activate")
+
+		cmd = exec.Command("bash", "-c", fmt.Sprintf("source %s", activateVenvPath))
+	}
+
+	return cmd.Run()
 }
