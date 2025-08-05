@@ -155,8 +155,6 @@ func main() {
 				fmt.Println("Error while activating virtual environment:", err)
 				return
 			}
-
-			fmt.Printf("Virtual environment activated.")
 		},
 	})
 

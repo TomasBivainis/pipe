@@ -150,25 +150,55 @@ func activateVirtualEnvironment() error {
 
 		info, err := os.Stat(venvPath)
 		if err == nil && info.IsDir() {
-			break;
+			break
 		}
 	}
 	if venvPath == "" {
 		return fmt.Errorf("virtual environment was not found")
 	}
 
-	var cmd *exec.Cmd
-
+	// Check if activation script exists
+	var activateScript string
 	switch runtime.GOOS {
 	case "windows":
-		activateVenvPath := filepath.Join(venvPath, "Scripts", "activate.bat")
-
-		cmd = exec.Command("cmd.exe", "/C", activateVenvPath)
+		activateScript = filepath.Join(venvPath, "Scripts", "activate.bat")
+		if _, err := os.Stat(activateScript); err != nil {
+			return fmt.Errorf("activation script not found at %s", activateScript)
+		}
 	default:
-		activateVenvPath := filepath.Join(venvPath, "Scripts", "activate")
-
-		cmd = exec.Command("bash", "-c", fmt.Sprintf("source %s", activateVenvPath))
+		activateScript = filepath.Join(venvPath, "bin", "activate")
+		if _, err := os.Stat(activateScript); err != nil {
+			return fmt.Errorf("activation script not found at %s", activateScript)
+		}
 	}
 
-	return cmd.Run()
+	// Get the user's shell
+	shell := os.Getenv("SHELL")
+	if shell == "" {
+		// Fallback shells
+		switch runtime.GOOS {
+		case "windows":
+			shell = "cmd.exe"
+		default:
+			shell = "/bin/bash"
+		}
+	}
+
+	// Print activation instructions
+	fmt.Printf("To activate the virtual environment, run:\n")
+	switch runtime.GOOS {
+	case "windows":
+		fmt.Printf("  %s\n", activateScript)
+	default:
+		fmt.Printf("  source %s\n", activateScript)
+	}
+	fmt.Printf("\nOr to activate and run a command:\n")
+	switch runtime.GOOS {
+	case "windows":
+		fmt.Printf("  cmd /c \"%s && your_command_here\"\n", activateScript)
+	default:
+		fmt.Printf("  source %s && your_command_here\n", activateScript)
+	}
+
+	return nil
 }
