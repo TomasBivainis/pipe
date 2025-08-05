@@ -11,7 +11,7 @@
   <a href="https://github.com/TomasBivainis/pvm/actions/workflows/test.yml">
     <img src="https://github.com/TomasBivainis/pvm/actions/workflows/test.yml/badge.svg" alt="Build Status" />
   </a>
-  <a href="https://img.shields.io/github/v/release/TomasBivainis/pvm">
+  <a href="https://github.com/TomasBivainis/pvm/releases">
     <img src="https://img.shields.io/github/v/release/TomasBivainis/pvm" alt="Latest Release" />
   </a>
   <a href="https://img.shields.io/github/go-mod/go-version/TomasBivainis/pvm">
