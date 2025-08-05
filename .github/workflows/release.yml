@@ -26,13 +26,71 @@ jobs:
       - name: Build binary
         run: |
           mkdir -p dist
-          GOOS=${{ matrix.goos }} GOARCH=${{ matrix.goarch }} go build -o dist/pvm-${{ matrix.goos }}-${{ matrix.goarch }}${{ matrix.goos == 'windows' && '.exe' || ''}} .
+          BINARY_NAME=pvm
+          if [ "${{ matrix.goos }}" = "windows" ]; then
+            BINARY_NAME=pvm.exe
+          fi
+          GOOS=${{ matrix.goos }} GOARCH=${{ matrix.goarch }} go build -o dist/$BINARY_NAME .
 
-      - name: Upload binary to artifacts
+      - name: Make binary executable (Unix systems)
+        if: matrix.goos != 'windows'
+        run: chmod +x dist/pvm
+
+      - name: Create README for archive
+        run: |
+          cat > dist/README.md << 'EOF'
+          # PVM - Python Virtual Environment Manager
+
+          ## Installation
+
+          ### Linux/macOS
+          1. Extract this archive: `tar -xzf pvm-*.tar.gz`
+          2. Move the binary to your PATH: `sudo mv pvm /usr/local/bin/` (or `~/bin/` if you have it in your PATH)
+          3. Run: `pvm --help`
+
+          ### Windows
+          1. Extract the zip file
+          2. Add the extracted directory to your PATH environment variable
+          3. Run: `pvm --help`
+
+          ## Usage
+
+          ```bash
+          # Initialize a virtual environment
+          pvm init
+
+          # Install packages
+          pvm install requests pytest
+
+          # Install from requirements.txt
+          pvm install
+
+          # Uninstall packages
+          pvm uninstall requests
+          ```
+
+          For more information, visit: https://github.com/TomasBivainis/pvm
+          EOF
+
+      - name: Create archive (Unix systems)
+        if: matrix.goos != 'windows'
+        run: |
+          cd dist
+          tar -czf pvm-${{ matrix.goos }}-${{ matrix.goarch }}.tar.gz pvm README.md
+          rm pvm README.md
+
+      - name: Create archive (Windows)
+        if: matrix.goos == 'windows'
+        run: |
+          cd dist
+          zip pvm-${{ matrix.goos }}-${{ matrix.goarch }}.zip pvm.exe README.md
+          rm pvm.exe README.md
+
+      - name: Upload archive to artifacts
         uses: actions/upload-artifact@v4
         with:
-          name: binaries-${{ matrix.goos }}-${{ matrix.goarch }}
-          path: dist/
+          name: pvm-${{ matrix.goos }}-${{ matrix.goarch }}
+          path: dist/pvm-${{ matrix.goos }}-${{ matrix.goarch }}.${{ matrix.goos == 'windows' && 'zip' || 'tar.gz' }}
 
   release:
     needs: build
