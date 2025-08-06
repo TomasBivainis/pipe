@@ -55,14 +55,15 @@ Say goodbye to fiddling with `venv`, `pip`, and `requirements.txt`. Just run `pv
 ### Option 1: Download a Release
 
 1. Visit the [Releases](https://github.com/TomasBivainis/pvm/releases) page.
-2. Download the appropriate binary for your OS.
-3. Make it executable (Linux/macOS):
+2. Download the appropriate binary for your OS and extract it:
+
+   #### On Linux/macOS:
 
    ```sh
-   chmod +x pvm
+   tar -xzf pvm-linux-amd64.tar.gz
    ```
 
-4. Move it somewhere in your `PATH`:
+3. Move it somewhere in your `PATH`:
 
    #### On Linux/macOS:
 
