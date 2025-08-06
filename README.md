@@ -56,13 +56,6 @@ Say goodbye to fiddling with `venv`, `pip`, and `requirements.txt`. Just run `pv
 
 1. Visit the [Releases](https://github.com/TomasBivainis/pvm/releases) page.
 2. Download the appropriate binary for your OS and extract it:
-
-   #### On Linux/macOS:
-
-   ```sh
-   tar -xzf pvm-linux-amd64.tar.gz
-   ```
-
 3. Move it somewhere in your `PATH`:
 
    #### On Linux/macOS:
@@ -84,6 +77,15 @@ Say goodbye to fiddling with `venv`, `pip`, and `requirements.txt`. Just run `pv
      ```powershell
      refreshenv
      ```
+
+4. Remove Quarantine Attribute (macOS only):
+   I am not enrolled in the Apple Developer Program, so `pvm` gets automatically flagged and "quarantined". To use the program, run:
+
+   ```sh
+   xattr -d com.apple.quarantine /usr/local/bin/pvm
+   ```
+
+   This will remove the "quarantine" and will let you use the tool.
 
 ---
 
