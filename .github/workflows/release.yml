@@ -46,6 +46,7 @@ jobs:
           ### Linux/macOS
           1. Extract this archive: `tar -xzf pvm-*.tar.gz`
           2. Move the binary to your PATH: `sudo mv pvm /usr/local/bin/` (or `~/bin/` if you have it in your PATH)
+          2.5 (macOS only) Bypass Apple's Gatekeeper: `xattr -d com.apple.quarantine /usr/local/bin/pvm`
           3. Run: `pvm --help`
 
           ### Windows
@@ -67,6 +68,9 @@ jobs:
 
           # Uninstall packages
           pvm uninstall requests
+
+          # Run scripts
+          pvm run main.py
           ```
 
           For more information, visit: https://github.com/TomasBivainis/pvm

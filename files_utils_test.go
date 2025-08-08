@@ -163,6 +163,37 @@ func TestCreateRequirementsFile(t *testing.T) {
 	actual, _ := filepath.EvalSymlinks(path)
 
 	if actual != expected {
-		t.Errorf("path is incorrect: excpected %s, received %s", expected, actual)
+		t.Errorf("path is incorrect: expected %s, received %s", expected, actual)
+	}
+}
+
+func TestCreateGitignoreFile(t *testing.T) {
+	tmpDir := t.TempDir()
+
+	oldDir, _ := os.Getwd()
+	os.Chdir(tmpDir)
+	t.Cleanup(func() { os.Chdir(oldDir) })
+
+	expectedPath := filepath.Join(tmpDir, ".gitignore")
+
+	err := createGitignoreFile()
+	if err != nil {
+		t.Fatalf("createGitignoreFile failed: %v", err)
+	}
+
+	path, err := getFilePath(".gitignore")
+	if err != nil {
+		t.Fatalf("getFilePath failed: %v", err)
+	}
+
+	if path == "" {
+		t.Errorf("path not found")
+	}
+
+	expected, _ := filepath.EvalSymlinks(expectedPath)
+	actual, _ := filepath.EvalSymlinks(path)
+
+	if actual != expected {
+		t.Errorf("path is incorrect: expected %s, received %s", expected, actual)
 	}
 }

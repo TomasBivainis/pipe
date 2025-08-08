@@ -150,6 +150,36 @@ func main() {
 		},
 	})
 
+	// run command
+	rootCmd.AddCommand(&cobra.Command{
+		Use:   "run",
+		Short: "Runs a specified python script in the virtual environment",
+		Run: func(cmd *cobra.Command, args []string) {
+			if len(args) == 0 {
+				fmt.Println("No scripts entered to run.")
+				return
+			}
+
+			virtualEnvironmentExists, err := detectVirtualEnvironment()
+			if err != nil {
+				fmt.Println("Error while detecting virtual environment:", err)
+				return
+			}
+
+			if !virtualEnvironmentExists {
+				fmt.Println("Virtual environment not initiated. Run \"pvm init\"")
+				return
+			}
+
+			scriptName := args[0]
+			err = runScript(scriptName)
+			if err != nil {
+				fmt.Printf("Error while running script %s: %v\n", scriptName, err)
+				return
+			}
+		},
+	})
+
 	if err := rootCmd.Execute(); err != nil {
 		fmt.Println(err)
 		os.Exit(1)

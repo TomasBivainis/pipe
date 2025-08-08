@@ -130,3 +130,87 @@ func TestInstallPackagesFromRequirements(t *testing.T) {
 		}
 	}
 }
+
+func TestGetVenvPythonPath(t *testing.T) {
+	setupTempDirectory(t)
+
+	// Create venv first
+	err := createVirtualEnvironment()
+	if err != nil {
+		t.Skip("Could not create virtual environment (is python installed?):", err)
+	}
+
+	pipPath, err := getVenvPythonPath()
+	if err != nil {
+		t.Fatalf("getVenvPythonPath error: %v", err)
+	}
+
+	if pipPath == "" {
+		t.Error("Expected a pip path, got empty string")
+	}
+}
+
+func TestGetVenvPythonPathWithoutVirtualEnvironment(t *testing.T) {
+	setupTempDirectory(t)
+
+	_, err := getVenvPythonPath()
+	if err == nil {
+		t.Fatalf("Expected error when searching for venv python without virtual environment, but got none")
+	}
+}
+
+func TestRunScript(t *testing.T) {
+	setupTempDirectory(t)
+
+	// Create venv first
+	err := createVirtualEnvironment()
+	if err != nil {
+		t.Skip("Could not create virtual environment (is python installed?):", err)
+	}
+
+	// Create a simple Python script for testing
+	scriptContent := `#!/usr/bin/env python3
+import sys
+print("Hello from Python script!")
+print(f"Python version: {sys.version}")
+sys.exit(0)
+`
+	
+	scriptPath := "test_script.py"
+	err = os.WriteFile(scriptPath, []byte(scriptContent), 0755)
+	if err != nil {
+		t.Fatalf("Failed to create test script: %v", err)
+	}
+
+	// Test running the script
+	err = runScript(scriptPath)
+	if err != nil {
+		t.Fatalf("runScript failed: %v", err)
+	}
+}
+
+func TestRunScriptWithNonExistentScript(t *testing.T) {
+	setupTempDirectory(t)
+
+	// Create venv first
+	err := createVirtualEnvironment()
+	if err != nil {
+		t.Skip("Could not create virtual environment (is python installed?):", err)
+	}
+
+	// Test running a non-existent script
+	err = runScript("non_existent_script.py")
+	if err == nil {
+		t.Error("Expected error when running non-existent script, but got none")
+	}
+}
+
+func TestRunScriptWithoutVirtualEnvironment(t *testing.T) {
+	setupTempDirectory(t)
+
+	// Test running a script without a virtual environment
+	err := runScript("test_script.py")
+	if err == nil {
+		t.Error("Expected error when running script without virtual environment, but got none")
+	}
+}

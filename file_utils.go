@@ -48,7 +48,7 @@ func createRequirementsFile() error {
 	return nil
 }
 
-// creates a requirements.txt file
+// creates a .gitignore file
 func createGitignoreFile() error {
 	targetFile := ".gitignore"
 
