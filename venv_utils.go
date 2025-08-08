@@ -20,6 +20,30 @@ func getGlobalPythonPath() (string, error) {
 	return "", fmt.Errorf("python not found")
 }
 
+func getVenvPythonPath() (string, error) {
+	cwd, err := os.Getwd()
+	if err != nil {
+		return "", err
+	}
+
+	venvDirs := []string{"venv", ".venv", "env"}
+
+	for _, venvDir := range venvDirs {
+		// Adjust for OS
+		venvPython := filepath.Join(cwd, venvDir, "bin", "python")
+		if _, err := os.Stat(venvPython); err == nil {
+			return venvPython, nil
+		}
+
+		venvPythonWin := filepath.Join(cwd, venvDir, "Scripts", "python.exe")
+		if _, err := os.Stat(venvPythonWin); err == nil {
+			return venvPythonWin, nil
+		}
+	}
+
+	return "", fmt.Errorf("python not found in virtual environment")
+}
+
 // returns the path to the virtual environments pip
 func getVenvPipPath() (string, error) {
 	cwd, err := os.Getwd()
@@ -144,4 +168,16 @@ func isPythonPackageInstalled(pkg string) (bool, error) {
 		return false, nil // Not installed
 	}
 	return false, err // Some other error
+}
+
+func runScript(scriptName string) error {
+	pythonPath, err := getVenvPythonPath()
+	if err != nil {
+		return err
+	}
+
+	cmd := exec.Command(pythonPath, scriptName)
+	cmd.Stdout = os.Stdout
+	cmd.Stderr = os.Stderr
+	return cmd.Run()
 }
