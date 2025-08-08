@@ -48,6 +48,34 @@ func createRequirementsFile() error {
 	return nil
 }
 
+// creates a requirements.txt file
+func createGitignoreFile() error {
+	targetFile := ".gitignore"
+
+	cwd, err := os.Getwd()
+
+	if err != nil {
+		return err
+	}
+
+	gitignoreFile := filepath.Join(cwd, targetFile)
+	file, err := os.Create(gitignoreFile)
+
+	if err != nil {
+		return err
+	}
+
+	defer file.Close()
+
+	content := ".*"
+	err = os.WriteFile(gitignoreFile, []byte(content), 0644)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
 // writes the list of passed packages to the requirements.txt file
 // overwrites the text inside the file
 func writePackagesToRequirementsFile(packages []string) error {

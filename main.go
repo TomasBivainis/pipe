@@ -49,9 +49,25 @@ func main() {
 					fmt.Println("Error while creating requirements file:", err)
 					return
 				}
-
-				fmt.Println("Created a new requirements.txt file.")
 			}
+
+			fmt.Println("Created a new requirements.txt file.")
+
+			path, err = getFilePath(".gitignore")
+			if err != nil {
+				fmt.Println("Error while detecting gitignore file:", err)
+				return
+			}
+
+			if path == "" {
+				err := createGitignoreFile()
+				if err != nil {
+					fmt.Println("Error while creating gitignore file:", err)
+					return
+				}
+			}
+
+			fmt.Println("Created a new gitignore file.")
 		},
 	})
 
