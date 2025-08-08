@@ -20,6 +20,7 @@ func getGlobalPythonPath() (string, error) {
 	return "", fmt.Errorf("python not found")
 }
 
+// returns the path of the virtual environments python application
 func getVenvPythonPath() (string, error) {
 	cwd, err := os.Getwd()
 	if err != nil {
@@ -170,6 +171,7 @@ func isPythonPackageInstalled(pkg string) (bool, error) {
 	return false, err // Some other error
 }
 
+// runs the passed script in the virtual environment
 func runScript(scriptName string) error {
 	pythonPath, err := getVenvPythonPath()
 	if err != nil {
