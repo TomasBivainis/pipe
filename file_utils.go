@@ -67,7 +67,55 @@ func createGitignoreFile() error {
 
 	defer file.Close()
 
-	content := ".*"
+	thingsToIgnore := [...]string{
+		"# Virtual Environment folder",
+		".venv",
+		"",
+		"# Environment files", 
+		".env", 
+		".env.*",
+		"",
+		"# Build output",
+		"dist/",
+		"build/",
+		"tmp/",
+		"temp/",
+		".cache/",
+		"out/",
+		"coverage/",
+		"",
+		"# IDEs & Editors",
+		".vscode/",
+		".idea/",
+		"*.sublime-workspace",
+		"*.sublime-project",
+		"",
+		"# OS-specific files",
+		"*.swp",
+		"*.swo",
+		"*.bak",
+		"*.tmp",
+		"",
+		"# Compiled files",
+		"*.class",
+		"*.pyc",
+		"*.pyo",
+		"*.exe",
+		"*.dll",
+		"*.o",
+		"*.obj",
+		"*.so",
+		"*.a",
+		"*.out",
+		"",
+		"# System files",
+		".DS_Store",
+		"Thumbs.db",
+	}
+
+	content := strings.Join(thingsToIgnore[:], "\n")
+
+
 	err = os.WriteFile(gitignoreFile, []byte(content), 0644)
 	if err != nil {
 		return err
