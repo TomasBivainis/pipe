@@ -43,7 +43,7 @@ Say goodbye to fiddling with `venv`, `pip`, and `requirements.txt`. Just run `pv
 
 ## ✨ Features
 
-- ✅ `pvm init` — Create a virtual environment and a `requirements.txt`.
+- ✅ `pvm init` — Create a virtual environment, `requirements.txt` and a `.gitignore`.
 - 📦 `pvm install <package>` — Install pip packages _and_ update `requirements.txt`.
 - ❌ `pvm uninstall <package>` — Clean removal of packages and their entries.
 - 🔄 Reproducible environments without external tools.
