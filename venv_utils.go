@@ -120,8 +120,8 @@ func installPackages(packages []string) error {
 	}
 
 	cmd := exec.Command(pipCommand, (append([]string{"install"}, packages...))...)
-	cmd.Stdout = os.Stdout
-	cmd.Stderr = os.Stderr
+	cmd.Stdout = nil
+	cmd.Stderr = nil
 	return cmd.Run()
 }
 
@@ -133,8 +133,8 @@ func installPackagesFromRequirements() error {
 	}
 
 	cmd := exec.Command(pipCommand, "install", "-r", "requirements.txt")
-	cmd.Stdout = os.Stdout
-	cmd.Stderr = os.Stderr
+	cmd.Stdout = nil
+	cmd.Stderr = nil
 	return cmd.Run()
 }
 
@@ -147,8 +147,8 @@ func uninstallPackages(packages []string) error {
 	}
 
 	cmd := exec.Command(pipCommand, (append([]string{"uninstall", "-y"}, packages...))...)
-	cmd.Stdout = os.Stdout
-	cmd.Stderr = os.Stderr
+	cmd.Stdout = nil
+	cmd.Stderr = nil
 	return cmd.Run()
 }
 

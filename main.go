@@ -88,21 +88,23 @@ func main() {
 			}
 
 			if len(args) == 0 {
+				fmt.Println("Installing package(s) from requirements.txt...")
 				err := installPackagesFromRequirements()
 				if err != nil {
-					fmt.Println("Error while installing packages:", err)
+					fmt.Println("Error while installing package(s):", err)
 					return
 				}
 
-				fmt.Println("All packages from the requirements file have been installed.")
+				fmt.Println("All package(s) from the requirements file have been installed.")
 			} else {
+				fmt.Println("Installing packages...")
 				err := installPackages(args)
 				if err != nil {
 					fmt.Println("Error while installing packages:", err)
 					return
 				}
 				fmt.Println("The package(s) have been installed.")
-
+				fmt.Println("Adding package(s) to the requirements file...")
 				err = addPackagesToRequirementsFile(args)
 				if err != nil {
 					fmt.Println("Error while writing packages to requirements file:", err)
@@ -119,7 +121,7 @@ func main() {
 		Short: "Uninstall a python pip package",
 		Run: func(cmd *cobra.Command, args []string) {
 			if len(args) == 0 {
-				fmt.Println("No packages entered to uninstall.")
+				fmt.Println("No package(s) entered to uninstall.")
 				return
 			}
 
@@ -134,6 +136,7 @@ func main() {
 				return
 			}
 
+			fmt.Println("Uninstalling package(s)...")
 			err = uninstallPackages(args)
 			if err != nil {
 				fmt.Println("Error while uninstalling packages:", err)
@@ -141,6 +144,7 @@ func main() {
 			}
 			fmt.Println("The package(s) have been uninstalled.")
 			
+			fmt.Println("Removing package(s) from the rquirements file...")
 			err = removePackagesFromRequirementsFile(args)
 			if err != nil {
 				fmt.Println("Error while removing packages from requirements file:", err)
